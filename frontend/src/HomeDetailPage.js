@@ -8,13 +8,13 @@ const HomeDetailPage = () => {
   const Products = useSelector((state) => state.Products.list);
   const CartItems = useSelector((state) => state.cartItems.list);
   const dispatch = useDispatch();
-  console.log(CartItems);
+  // console.log(CartItems);
 
   const cartItem = CartItems.find((ele) => ele.Pid === Number(id));
   const ProductItem = cartItem
     ? Products.find((ele) => ele.id === cartItem.Pid)
     : null;
-  console.log(cartItem);
+  // console.log(cartItem);
 
   if (!ProductItem) return <div>Product not found!</div>;
 
