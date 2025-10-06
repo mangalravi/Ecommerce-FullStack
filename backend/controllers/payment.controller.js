@@ -4,10 +4,10 @@ import Order from "../models/order.model.js";
 import dotenv from "dotenv";
 dotenv.config();
 
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_SECRET,
-});
+// const razorpay = new Razorpay({
+//   key_id: process.env.RAZORPAY_KEY_ID,
+//   key_secret: process.env.RAZORPAY_SECRET,
+// });
 
 // ✅ Step 1: Create Razorpay Order
 export const createOrder = async (req, res) => {
@@ -16,7 +16,7 @@ export const createOrder = async (req, res) => {
 
     // Create order in Razorpay
     const options = {
-      amount: amount * 100, // amount in paise
+      amount: amount * 100, 
       currency,
       receipt: `receipt_${Date.now()}`,
     };

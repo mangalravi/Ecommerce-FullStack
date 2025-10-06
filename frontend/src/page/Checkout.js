@@ -34,7 +34,9 @@ const Checkout = () => {
       try {
         const parseData = JSON.parse(savedData);
         setFormData(parseData);
-        if (formData.phoneNumber) setIsPhoneVerified(true);
+        if (parseData.phoneNumber) setIsPhoneVerified(true);
+        setSuccess(true)
+        
       } catch (error) {
         console.log("something went wrong ", error);
       }
