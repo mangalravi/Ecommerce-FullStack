@@ -1,4 +1,4 @@
-import Product from "../models/product.model.js"
+import {Product} from "../models/product.model.js"
 import { ApiError } from "../utiles/ApiError.js"
 
 export const loadProduct = async (req, _, next) => {

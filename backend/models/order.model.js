@@ -1,30 +1,50 @@
 import mongoose from "mongoose"
 
-const orderSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  cartItems: [
-    {
-      title: String,
-      price: Number,
-      quantity: Number,
-      image: String,
+const orderSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
-  ],
-  address: {
-    phoneNumber: String,
-    streetAddress: String,
-    city: String,
-    zipCode: String,
+    cartItems: [
+      {
+        productId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Product",
+          required: true,
+        },
+        name: String,
+        price: Number,
+        quantity: {
+          type: Number,
+          required: true,
+          min: 1,
+        },
+      },
+    ],
+    address: {
+      phoneNumber: String,
+      streetAddress: String,
+      city: String,
+      zipCode: String,
+    },
+    totalAmount: Number,
+    paymentStatus: {
+      type: String,
+      enum: ["Pending", "Success", "Failed"],
+      default: "Pending",
+    },
+    deliverdStatus: {
+      type: String,
+      enum: ["Delivered", "Pending", "Cancelled"],
+      default: "Pending",
+    },
+    razorpayOrderId: String,
+    razorpayPaymentId: String,
   },
-  totalAmount: Number,
-  paymentStatus: {
-    type: String,
-    enum: ["pending", "success", "failed"],
-    default: "pending",
-  },
-  razorpayOrderId: String,
-  razorpayPaymentId: String,
-  createdAt: { type: Date, default: Date.now },
-})
+  { timestamps: true }
+)
 
-export default mongoose.model("Order", orderSchema)
+const Order = mongoose.model("Order", orderSchema)
+export default Order

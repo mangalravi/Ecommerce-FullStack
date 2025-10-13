@@ -1,6 +1,6 @@
-import Product from "../models/product.model.js"
 import { ApiError } from "../utiles/ApiError.js"
 import { ApiResponse } from "../utiles/ApiResponse.js"
+import {Product} from "../models/product.model.js"
 
 const addProduct = async (req, res, next) => {
   try {
@@ -39,15 +39,25 @@ const addProduct = async (req, res, next) => {
   }
 }
 
-const getAllProducts = async (req, res, next) => {
+const getAllProducts = async (_, res, next) => {
   try {
-    const products = await Product.find().populate(
-      "createdBy",
-      "username email"
-    )
+    const products = await Product.find()
+    // console.log("products", products)
+
     return res.json(
       new ApiResponse(200, products, "Products fetched successfully")
     )
+  } catch (error) {
+    next(error)
+  }
+}
+
+const getProductBySlug = async (req, res, next) => {
+  try {
+    const { slug } = req.params
+    const product = await Product.findOne({ slug })
+    if (!product) throw new ApiError(404, "Product not found")
+    return res.json(new ApiResponse(200, product, "Product fetched successfully"))
   } catch (error) {
     next(error)
   }
@@ -110,6 +120,7 @@ const deleteProduct = async (req, res, next) => {
 export {
   addProduct,
   getAllProducts,
+  getProductBySlug,
   getProductById,
   updateProduct,
   deleteProduct,

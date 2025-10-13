@@ -1,0 +1,82 @@
+/* Container */
+.update-account-container {
+  min-height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background-color: #f8f9fa;
+}
+
+/* Card */
+.update-account-card {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+  padding: 30px 40px;
+  width: 100%;
+  max-width: 450px;
+}
+
+.update-account-card h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #333;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Form */
+.update-form label {
+    text-align: start;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+  font-size: 14px;
+  color: #555;
+}
+
+.update-form input {
+  padding: 10px 12px;
+  margin-top: 6px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  outline: none;
+  transition: 0.3s;
+}
+
+.update-form input:focus {
+  border-color: #3399cc;
+  box-shadow: 0 0 5px rgba(51, 153, 204, 0.3);
+}
+
+/* Button */
+.update-btn {
+  width: 100%;
+  padding: 12px 0;
+  background-color: #3399cc;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: 0.3s;
+}
+
+.update-btn:hover {
+  background-color: #287ba1;
+}
+
+/* Messages */
+.error-msg {
+  color: #d9534f;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.success-msg {
+  color: #28a745;
+  font-size: 13px;
+  margin-bottom: 10px;
+}

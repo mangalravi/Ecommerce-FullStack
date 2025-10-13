@@ -1,0 +1,136 @@
+/* Container */
+.profile-container {
+  min-height: 100vh;
+  background: #f2f4f8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+}
+
+/* Card */
+.profile-card {
+  background: #fff;
+  width: 100%;
+  max-width: 420px;
+  border-radius: 16px;
+  padding: 30px 25px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* Avatar */
+.profile-avatar {
+  position: relative;
+  width: 110px;
+  height: 110px;
+  margin: 0 auto 15px;
+}
+
+.profile-avatar img {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  border: 3px solid #007bff;
+  object-fit: cover;
+}
+
+.edit-btn {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  background: #007bff;
+  color: #fff;
+  font-size: 13px;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.edit-btn:hover {
+  background: #0056b3;
+}
+
+/* Name and Role */
+.profile-name {
+  font-size: 22px;
+  font-weight: 600;
+  color: #222;
+  margin-top: 10px;
+}
+
+.profile-role {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+/* Divider */
+.divider {
+  height: 1px;
+  background: #eee;
+  margin: 15px 0;
+}
+
+/* Info Section */
+.profile-info {
+  text-align: left;
+  font-size: 15px;
+  color: #444;
+  line-height: 1.8;
+}
+
+.profile-info .icon {
+  margin-right: 8px;
+  color: #007bff;
+  font-size: 17px;
+}
+
+/* Buttons */
+.profile-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 25px;
+}
+
+.btn {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.primary-btn {
+  background: #007bff;
+  color: white;
+}
+
+.primary-btn:hover {
+  background: #0056b3;
+}
+
+.danger-btn {
+  background: #dc3545;
+  color: white;
+}
+
+.danger-btn:hover {
+  background: #b02a37;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .profile-card {
+    padding: 25px 15px;
+  }
+  .profile-name {
+    font-size: 20px;
+  }
+}

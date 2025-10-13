@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken"
 import { User } from "../models/user.model.js"
 
 export const verifyJWT = asyncHandler(async (req, _, next) => {
-  console.log("req,body", req.cookies)
+  // console.log("req,body", req.cookies)
 
   // console.log("Token from header/cookie:", token)
   console.log("ACCESS_TOKEN_SECRET:", process.env.ACCESS_TOKEN_SECRET)
@@ -19,7 +19,7 @@ export const verifyJWT = asyncHandler(async (req, _, next) => {
     // Verify token
     const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
 
-    console.log("decodedToken", decodedToken)
+    // console.log("decodedToken", decodedToken)
 
     if (!decodedToken || !decodedToken._id) {
       throw new ApiError(401, "Invalid or expired token")

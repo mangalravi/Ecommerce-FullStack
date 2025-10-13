@@ -11,6 +11,8 @@ const userSlice = createSlice({
   reducers: {
     setUser: (state, action) => {
       state.user = action.payload;
+      // console.log("action.payload of user", action.payload);
+
       localStorage.setItem("user", JSON.stringify(action.payload));
     },
     loadUserFromStorage: (state) => {
@@ -26,9 +28,17 @@ const userSlice = createSlice({
       const index = state.cart.findIndex(
         (item) => item.productId === action.payload
       );
-      if (index === -1)
-        state.cart.push({ productId: action.payload, quantity: 1 });
+      if (index === -1) state.cart.push();
       else state.cart[index].quantity += 1;
+    },
+    updateAccountDetail: (state, action) => {
+      const updatedUser = action.payload;
+      if (state.user._id === updatedUser._id) {
+        state.user = {
+          ...state.user,
+          ...updatedUser,
+        };
+      }
     },
     removeFromCart: (state, action) => {
       state.cart = state.cart.filter(
@@ -63,6 +73,7 @@ export const {
   setUser,
   loadUserFromStorage,
   logoutUser,
+  updateAccountDetail,
   addToCart,
   removeFromCart,
   increaseCartItem,

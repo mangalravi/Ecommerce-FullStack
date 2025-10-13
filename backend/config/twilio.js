@@ -6,7 +6,7 @@ const client = twilio(
   process.env.TWILIO_ACCOUNT_SID,
   process.env.TWILIO_AUTH_TOKEN
 )
-console.log("Twilio Client SID:", process.env.TWILIO_ACCOUNT_SID)
+// console.log("Twilio Client SID:", process.env.TWILIO_ACCOUNT_SID)
 client.messages
   .create({
     body: `Your OTP is ${otp}`,

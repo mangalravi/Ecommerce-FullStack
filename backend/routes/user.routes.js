@@ -7,12 +7,15 @@ import {
   changeCurrentPassword,
   getCurrentUser,
   updateAccountDetail,
-  getAllUser,
+  getUserCartItems,
   requestPasswordChange,
   verifyResetToken,
   resetPassword,
   sendOtp,
   verifyOtp,
+  removeCartItem,
+  addOrUpdateCartItem,
+  clearCartItems,
 } from "../controllers/user.controller.js"
 import { verifyJWT } from "../middlewares/auth.middleware.js"
 
@@ -30,8 +33,11 @@ router.route("/logout").post(verifyJWT, logoutUser)
 router.route("/refresh-token").post(refreshAccessToken)
 router.route("/change-password").post(verifyJWT, changeCurrentPassword)
 router.route("/current-user").get(verifyJWT, getCurrentUser)
-router.route("/all-users").get(verifyJWT, getAllUser)
-router.route("/update-account").patch(verifyJWT, updateAccountDetail)
+router.route("/get-user-cart-items").get(verifyJWT, getUserCartItems)
+router.route("/add-or-update-cart-item").post(verifyJWT, addOrUpdateCartItem)
+router.route("/remove-cart-items").delete(verifyJWT, removeCartItem)
+router.route("/clear-cart").delete(verifyJWT, clearCartItems);
+router.route("/update-account/:id").patch(verifyJWT, updateAccountDetail)
 router.route("/send-otp").post(sendOtp)
 router.route("/verify-otp").post(verifyOtp)
 

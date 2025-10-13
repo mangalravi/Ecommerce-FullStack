@@ -9,7 +9,7 @@ const ProductList = [
     discountPercentage: 10.48,
     rating: 2.56,
     stock: 99,
-    tags: ["beauty", "mascara"],
+    tags: ["beauty", "mascara"], 
     brand: "Essence",
     sku: "BEA-ESS-ESS-001",
     weight: 4,
@@ -605,12 +605,12 @@ const ProductList = [
     description:
       "The Annibale Colombo Bed is a luxurious and elegant bed frame, crafted with high-quality materials for a comfortable and stylish bedroom.",
     category: "furniture",
+    brand: "Annibale Colombo",
     price: 1899.99,
     discountPercentage: 8.57,
     rating: 4.77,
     stock: 88,
     tags: ["furniture", "beds"],
-    brand: "Annibale Colombo",
     sku: "FUR-ANN-ANN-011",
     weight: 10,
     dimensions: {
@@ -666,12 +666,12 @@ const ProductList = [
     description:
       "The Annibale Colombo Sofa is a sophisticated and comfortable seating option, featuring exquisite design and premium upholstery for your living room.",
     category: "furniture",
+    brand: "Annibale Colombo",
     price: 2499.99,
     discountPercentage: 14.4,
     rating: 3.92,
     stock: 60,
     tags: ["furniture", "sofas"],
-    brand: "Annibale Colombo",
     sku: "FUR-ANN-ANN-012",
     weight: 6,
     dimensions: {
@@ -727,12 +727,12 @@ const ProductList = [
     description:
       "The Bedside Table in African Cherry is a stylish and functional addition to your bedroom, providing convenient storage space and a touch of elegance.",
     category: "furniture",
+    brand: "Furniture Co.",
     price: 299.99,
     discountPercentage: 19.09,
     rating: 2.87,
     stock: 64,
     tags: ["furniture", "bedside tables"],
-    brand: "Furniture Co.",
     sku: "FUR-FUR-BED-013",
     weight: 2,
     dimensions: {
@@ -788,12 +788,12 @@ const ProductList = [
     description:
       "The Knoll Saarinen Executive Conference Chair is a modern and ergonomic chair, perfect for your office or conference room with its timeless design.",
     category: "furniture",
+    brand: "Knoll",
     price: 499.99,
     discountPercentage: 2.01,
     rating: 4.88,
     stock: 26,
     tags: ["furniture", "office chairs"],
-    brand: "Knoll",
     sku: "FUR-KNO-KNO-014",
     weight: 10,
     dimensions: {
@@ -849,12 +849,12 @@ const ProductList = [
     description:
       "The Wooden Bathroom Sink with Mirror is a unique and stylish addition to your bathroom, featuring a wooden sink countertop and a matching mirror.",
     category: "furniture",
+    brand: "Bath Trends",
     price: 799.99,
     discountPercentage: 8.8,
     rating: 3.59,
     stock: 7,
     tags: ["furniture", "bathroom"],
-    brand: "Bath Trends",
     sku: "FUR-BAT-WOO-015",
     weight: 10,
     dimensions: {

@@ -1,9 +1,42 @@
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import "./App.css";
 import Navbar from "./components/Navbar";
+import { setUser } from "./store/slices/UserSlice";
 
 function App() {
   const location = useLocation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkTokenExpiry = () => {
+      const token = localStorage.getItem("token");
+      const user = localStorage.getItem("user");
+      const expiry = localStorage.getItem("tokenExpiry");
+
+      if (token && expiry) {
+        const now = new Date().getTime();
+        if (now > parseInt(expiry)) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          localStorage.removeItem("tokenExpiry");
+
+          dispatch(setUser(null));
+
+          alert("Session expired! Please login again.");
+          navigate("/login", { state: { from: location }, replace: true });
+        }
+      }
+    };
+
+    checkTokenExpiry();
+
+    const interval = setInterval(checkTokenExpiry, 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, [dispatch, navigate]);
 
   return (
     <div className="App">

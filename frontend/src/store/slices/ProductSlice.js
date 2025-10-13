@@ -1,23 +1,19 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import api from "../../api/api";
 
-// export const ProductReducer = (state = []) => {
-//   return state;
-// };
 export const fetchProductsData = createAsyncThunk(
   "product/fetchProductItems",
   async () => {
     try {
-      const response = await fetch(`https://dummyjson.com/products`);
-      const data = await response.json();
-      // console.log("data", data);
-
-      return data;
+      const data = await api.get(`/product`);
+      // console.log("response", data.data.message);
+      return data.data.message;
     } catch (error) {
       throw error;
     }
   }
 );
-// console.log("fetchProductsData =>",fetchProductsData);
+// console.log("fetchProductsData =>",fetchProductsData());
 
 const slice = createSlice({
   name: "Products",
@@ -47,7 +43,12 @@ const slice = createSlice({
       })
       .addCase(fetchProductsData.fulfilled, (state, action) => {
         state.loading = false;
-        state.list = action.payload.products;
+        // console.log("action.payload",action.payload);
+
+        state.list = action.payload.map((product) => ({
+          ...product,
+          slug: product.slug, 
+        }));
         state.error = "";
       })
       .addCase(fetchProductsData.rejected, (state, action) => {
@@ -61,21 +62,6 @@ const slice = createSlice({
 export const getAllProducts = (state) => state.Products.list;
 export const isProductsLoading = (state) => state.Products.loading;
 export const isProductsError = (state) => state.Products.error;
-export const getCurrentUserData = state => state.user.user
+export const getCurrentUserData = (state) => state.user.user;
 
-//  const { updateAllProducts, fetchProducts, fetchProductsError } =
-//   slice.actions;
-// export const fetchProductsData = () => (dispatch) => {
-//   dispatch(fetchProducts());
-//   fetch(`https://dummyjson.com/products`)
-//     .then((res) => res.json())
-//     .then((data) => {
-//       // console.log("data",data.products);
-
-//       dispatch(updateAllProducts(data.products));
-//     })
-//     .catch(() => {
-//       dispatch(fetchProductsError());
-//     });
-// };
 export const ProductReducer = slice.reducer;

@@ -1,6 +1,10 @@
 import { useState, useRef } from "react";
-import { useSelector } from "react-redux";
-import { getAllCartItems } from "../store/slices/CartSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getAllCartItems,
+  removeAllCartItems,
+  removeCartItemAPI,
+} from "../store/slices/CartSlice";
 import {
   getAllProducts,
   getCurrentUserData,
@@ -8,6 +12,7 @@ import {
 import "./checkout.css";
 import api from "../api/api";
 import { useEffect } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const Checkout = () => {
   const [paymentMethod, setPaymentMethod] = useState("card");
@@ -22,11 +27,16 @@ const Checkout = () => {
   const [success, setSuccess] = useState("");
   const [isPhoneVerified, setIsPhoneVerified] = useState(false);
   const [isOtpSent, setIsOtpSent] = useState(false);
+  const navigate = useNavigate();
 
   const otpRefs = useRef([]);
   const cartData = useSelector(getAllCartItems);
+  // console.log("cartitem from checkout",cartData);
+
   const productData = useSelector(getAllProducts);
+  //  console.log("productData from checkout",productData);
   const user = useSelector(getCurrentUserData);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const savedData = localStorage.getItem("mobileAndAddress");
@@ -35,13 +45,26 @@ const Checkout = () => {
         const parseData = JSON.parse(savedData);
         setFormData(parseData);
         if (parseData.phoneNumber) setIsPhoneVerified(true);
-        setSuccess(true)
-        
+        setSuccess(true);
       } catch (error) {
         console.log("something went wrong ", error);
       }
     }
   }, []);
+  useEffect(() => {
+    return () => {
+      const clearCart = async () => {
+        try {
+          await dispatch(removeAllCartItems()).unwrap();
+          console.log("Cart cleared from DB");
+        } catch (err) {
+          console.error("Failed to clear cart on leaving page", err);
+        }
+      };
+      clearCart();
+    };
+  }, [dispatch]);
+
   const handleSaveDetail = () => {
     if (formData) {
       localStorage.setItem("mobileAndAddress", JSON.stringify(formData));
@@ -50,11 +73,11 @@ const Checkout = () => {
   };
   const CartFinalData = cartData
     .map((cartItem) => {
-      const product = productData.find((p) => p.id === cartItem.Pid);
-      return product ? { ...product, quantity: cartItem.quanity } : null;
+      const product = productData.find((p) => p._id === cartItem.Pid);
+      return product ? { ...product, quantity: cartItem.quantity } : null;
     })
     .filter(Boolean);
-  // console.log("user", user);
+  console.log("CartFinalData from checkout", CartFinalData);
 
   // Handle form inputs
   const handleChange = (e) => {
@@ -178,7 +201,12 @@ const Checkout = () => {
       setError("Please save your billing details first");
       return;
     }
+   
 
+    if (paymentMethod === "cod") {
+      navigate("/success-page");
+      dispatch(removeAllCartItems());
+    }
     try {
       const amount = CartFinalData.reduce(
         (total, item) => total + item.quantity * item.price,
@@ -218,7 +246,7 @@ const Checkout = () => {
         prefill: {
           name: user.fullName,
           email: user.email,
-          contact: formData.phoneNumber,
+          phoneNumber: formData.phoneNumber,
         },
         theme: {
           color: "#3399cc",
@@ -277,6 +305,9 @@ const Checkout = () => {
                       onKeyDown={(e) => handleOtpKeyDown(index, e)}
                     />
                   ))}
+                  <button type="button" onClick={sendOtp}>
+                    Resend OTP
+                  </button>
                   <button type="button" onClick={verifyOtp}>
                     Verify OTP
                   </button>
@@ -306,7 +337,8 @@ const Checkout = () => {
               onChange={handleChange}
             />
 
-            {error && <p className="error">{error}</p>}
+            {error ||
+              (!paymentMethod === "cod" && <p className="error">{error}</p>)}
             {success && <p className="success">{success}</p>}
 
             <button
@@ -324,8 +356,10 @@ const Checkout = () => {
           <h3>Order Summary</h3>
           {CartFinalData.map((product) => {
             const subtotal = Math.floor(product.quantity * product.price);
+            // console.log("subtotal", subtotal);
+
             return (
-              <div key={product.id} className="summary-item">
+              <div key={product._id} className="summary-item">
                 <div className="summary-left">
                   <img src={product.images[0]} alt={product.id} width="50" />
                   <span>{product.title}</span>
@@ -335,6 +369,15 @@ const Checkout = () => {
             );
           })}
 
+          <hr />
+          <p>
+            Grand Total : ₹
+            {CartFinalData.reduce(
+              (total, product) =>
+                Math.floor(total + product.quantity * product.price),
+              0
+            )}
+          </p>
           <hr />
 
           <div className="payment-method">

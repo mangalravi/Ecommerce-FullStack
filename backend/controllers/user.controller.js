@@ -195,7 +195,7 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
 })
 
 const getCurrentUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user?._id) // Ensure req.user exists
+  const user = await User.findById(req.user?._id)
 
   if (!user) {
     return res.status(404).json({ message: "User not found" })
@@ -208,38 +208,159 @@ const getCurrentUser = asyncHandler(async (req, res) => {
   res.json({ user })
 })
 
-const getAllUser = asyncHandler(async (req, res) => {
-  const AllUser = await User.find()
-  if (!AllUser || AllUser.length === 0) {
+const getUserCartItems = asyncHandler(async (req, res) => {
+  const userId = req.user?._id
+  if (!userId) {
+    return res
+      .status(401)
+      .json({ message: "Unauthorized: User not found in token" })
+  }
+  const user = await User.findById(req.user?._id)
+    .select("-products")
+    .populate("cartItems.product")
+  if (!user) {
     return res.status(404).json({ message: "User not found" })
   }
-  const usersMissingToken = AllUser.filter((u) => !u.refreshToken)
-  if (usersMissingToken.length > 0) {
-    return res
-      .status(400)
-      .json({ message: "Some users are missing refresh tokens" })
-  }
-  res.json({ AllUser })
+  // console.log("user from cart", user)
+  res.status(200).json({
+    success: true,
+    message: "User Cart Items fetched successfully",
+    cartItems: user.cartItems,
+  })
 })
 
+// Add or update cart item
+export const addOrUpdateCartItem = asyncHandler(async (req, res) => {
+  const userId = req.user?._id
+  // console.log("req.body", req.body)
+  // console.log("req.user", req.user)
+  if (!userId) {
+    return res
+      .status(401)
+      .json({ message: "Unauthorized: User not found in token" })
+  }
+
+  const { product, quanity } = req.body
+  // console.log("req.body", req.body)
+
+  if (!product || quanity == null) {
+    return res
+      .status(400)
+      .json({ message: "ProductId and quanity are required" })
+  }
+
+  const user = await User.findById(userId)
+  // console.log("user", user)
+
+  if (!user) return res.status(404).json({ message: "User not found" })
+
+  const existingItemIndex = user.cartItems.findIndex(
+    (item) => item.product.toString() === product
+  )
+
+  if (existingItemIndex !== -1) {
+    // Update quanity or remove
+    if (quanity <= 0) {
+      user.cartItems.splice(existingItemIndex, 1)
+    } else {
+      user.cartItems[existingItemIndex].quanity = quanity
+    }
+  } else if (quanity > 0) {
+    // Add new item
+    user.cartItems.push({ product: product, quanity })
+  }
+
+  await user.save()
+  await user.populate("cartItems.product")
+
+  res.status(200).json({
+    success: true,
+    message: "Cart updated successfully",
+    cartItems: user.cartItems,
+  })
+})
+
+// Remove cart item
+export const removeCartItem = asyncHandler(async (req, res) => {
+  const userId = req.user?._id
+  const { productId } = req.body
+  console.log("userID", userId)
+  console.log("userID _id", productId)
+  console.log("req.body", req.body)
+
+  const user = await User.findById(userId)
+  if (!user) return res.status(404).json({ message: "User not found" })
+
+  user.cartItems = user.cartItems.filter(
+    (item) => item.product.toString() !== productId
+  )
+
+  await user.save()
+  await user.populate("cartItems.product")
+
+  res.status(200).json({
+    success: true,
+    message: "Item removed from cart",
+    cartItems: user.cartItems,
+  })
+})
+
+// Clear all cart items
+export const clearCartItems = asyncHandler(async (req, res) => {
+  const userId = req.user?._id
+  const user = await User.findById(userId)
+  if (!user) return res.status(404).json({ message: "User not found" })
+
+  user.cartItems = [] 
+  await user.save()
+
+  res.status(200).json({
+    success: true,
+    message: "Cart cleared successfully",
+    cartItems: user.cartItems,
+  })
+})
+
+// const getAllUser = asyncHandler(async (req, res) => {
+//   const AllUser = await User.find()
+//   if (!AllUser || AllUser.length === 0) {
+//     return res.status(404).json({ message: "User not found" })
+//   }
+//   const usersMissingToken = AllUser.filter((u) => !u.refreshToken)
+//   if (usersMissingToken.length > 0) {
+//     return res
+//       .status(400)
+//       .json({ message: "Some users are missing refresh tokens" })
+//   }
+//   res.json({ AllUser })
+// })
+
 const updateAccountDetail = asyncHandler(async (req, res) => {
-  const { fullName, email } = req.body
-  if (!fullName || !email) {
+  console.log("rea.body", req.body)
+  // console.log("rea.body full req", req)
+
+  const { fullName, email, username, phoneNumber } = req.body
+  if (!fullName || !email || !username || !phoneNumber) {
     throw new ApiError(400, "All Feilds are Required")
   }
+  const updateData = {
+    fullName: fullName,
+    email: email,
+    username: username,
+    phoneNumber: phoneNumber,
+  }
+  // if (phoneNumber) updateData.phoneNumber = phoneNumber;
   const user = await User.findByIdAndUpdate(
-    req.user._id,
+    req.body._id,
     {
-      $set: {
-        fullName,
-        email: email,
-      },
+      $set: updateData,
     },
     { new: true }
   ).select("-password -refreshToken")
   if (!user) {
     throw new ApiError(404, "User not found")
   }
+
   return res
     .status(200)
     .json(new ApiResponse(200, user, "Account Details Updated Successfully"))
@@ -431,7 +552,7 @@ export {
   refreshAccessToken,
   changeCurrentPassword,
   getCurrentUser,
-  getAllUser,
+  getUserCartItems,
   updateAccountDetail,
   requestPasswordChange,
   verifyResetToken,

@@ -9,11 +9,11 @@ dotenv.config({
   path: "./.env",
 })
 
-const client = twilio(
-  process.env.TWILIO_ACCOUNT_SID,
-  process.env.TWILIO_AUTH_TOKEN
-)
-console.log("Twilio Client SID:", process.env.TWILIO_ACCOUNT_SID)
+// const client = twilio(
+//   process.env.TWILIO_ACCOUNT_SID,
+//   process.env.TWILIO_AUTH_TOKEN
+// )
+// console.log("Twilio Client SID:", process.env.TWILIO_ACCOUNT_SID)
 
 app.use(
   cors({
@@ -41,10 +41,13 @@ app.use((req, _, next) => {
 import userRoute from "./routes/user.routes.js"
 import productRoute from "./routes/product.routes.js"
 import paymentRoute from "./routes/payment.routes.js"
+import orderRoute from "./routes/order.routes.js"
+
 
 //routes declaration
 app.use("/api/v1/users", userRoute)
 app.use("/api/v1/product", productRoute)
+app.use("/api/v1/order", orderRoute)
 
 //payment routes
 

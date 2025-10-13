@@ -1,6 +1,5 @@
-// Login.jsx
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import api from "../api/api";
 import "./auth.css";
 import { useDispatch } from "react-redux";
@@ -9,23 +8,29 @@ import { setUser } from "../store/slices/UserSlice";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
+  const from = location?.state?.from?.pathname || "/product";
+  console.log("location", location?.state?.from?.pathname);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
     try {
       const response = await api.post("/users/login", { email, password });
+      console.log("response", response);
+      const token = response.data.message.accessToken;
+      const user = response.data.message.user;
 
-      localStorage.setItem("token", response.data.message.accessToken);
-
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+      const expiryTime = new Date().getTime() + 60 * 60 * 1000;
+      localStorage.setItem("tokenExpiry", expiryTime);
       dispatch(setUser(response.data.message.user));
-
-      // console.log("Login Success:", response.data.message.user);
-
-      navigate("/product");
+      navigate(from, { replace: true });
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
     }
@@ -47,15 +52,23 @@ const Login = () => {
             />
           </div>
 
-          <div className="form-group">
+          <div className="form-group password-group">
             <label>Password:</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              placeholder="Enter your password"
-            />
+            <div className="password-wrapper">
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                placeholder="Enter your password"
+              />
+              <span
+                className="password-toggle"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? "🙈" : "👁️"}{" "}
+              </span>
+            </div>
           </div>
 
           {error && <p className="error">{error}</p>}
