@@ -12,16 +12,17 @@ import {
   isProductsLoading,
 } from "./slices/ProductSlice";
 import { Link } from "react-router-dom";
+import { Slider } from "@mui/material";
+import "./product.css";
 
 const AllProducts = () => {
   const [filterType, setFilterType] = useState("");
   const [filterValue, setFilterValue] = useState("");
-  const AllProducts = useSelector(getAllProducts) || [];
+  const allProducts = useSelector(getAllProducts) || [];
   const isLoading = useSelector(isProductsLoading);
   const isError = useSelector(isProductsError);
-  const CartItems = useSelector(getAllCartItems);
-  const [minPrice, setMinPrice] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(1000);
+  const cartItems = useSelector(getAllCartItems);
+  const [priceRange, setPriceRange] = useState([0, 1000]);
 
   const dispatch = useDispatch();
 
@@ -29,17 +30,18 @@ const AllProducts = () => {
     dispatch(fetchCartItemsData());
   }, [dispatch]);
 
-  const getCartItem = (productId) => {
-    return CartItems.find((item) => String(item.Pid) === String(productId));
-  };
+  const getCartItem = (productId) =>
+    cartItems.find((item) => String(item.Pid) === String(productId));
 
-  const finalProductAllData = AllProducts.map((product) => {
+  const finalProductAllData = allProducts.map((product) => {
     const cartItem = getCartItem(product._id);
     return { ...product, quantity: cartItem ? cartItem.quantity : 0 };
   });
 
   const displayedProducts = finalProductAllData.filter((product) => {
+    const [minPrice, maxPrice] = priceRange;
     const withinPrice = product.price >= minPrice && product.price <= maxPrice;
+
     let matchesFilter = true;
     if (filterType === "category" && filterValue) {
       matchesFilter = product.category === filterValue;
@@ -50,11 +52,11 @@ const AllProducts = () => {
     return withinPrice && matchesFilter;
   });
 
-  const uniquecategory = [
-    ...new Set(AllProducts.map((product) => product.category).filter(Boolean)),
+  const uniqueCategory = [
+    ...new Set(allProducts.map((p) => p.category).filter(Boolean)),
   ];
   const uniqueBrand = [
-    ...new Set(AllProducts.map((product) => product.brand).filter(Boolean)),
+    ...new Set(allProducts.map((p) => p.brand).filter(Boolean)),
   ];
 
   const handleAddToCart = (productId) => {
@@ -73,124 +75,160 @@ const AllProducts = () => {
     }
   };
 
-  return isLoading ? (
-    <h2 style={{ textAlign: "center" }}>Loading...</h2>
-  ) : isError ? (
-    <h3 style={{ color: "red", textAlign: "center" }}>{isError}</h3>
-  ) : (
-    <>
-      <h2>All Products</h2>
-      <div className="price-filter">
-        <label>Min Price: ₹{minPrice}</label>
-        <input
-          type="range"
-          min="0"
-          max="1000"
-          value={minPrice}
-          onChange={(e) => setMinPrice(e.target.value)}
-        />
+  if (isLoading) return <h2 className="text-center mt-10">Loading...</h2>;
+  if (isError)
+    return <h3 className="text-center mt-10 text-red-500">{isError}</h3>;
 
-        <label>Max Price: ₹{maxPrice}</label>
-        <input
-          type="range"
-          min="0"
-          max="1000"
-          value={maxPrice}
-          onChange={(e) => setMaxPrice(e.target.value)}
-        />
+  return (
+    <>
+      {/* Heading + Filters */}
+      <div className="flex flex-col md:flex-row md:justify-between mb-6 gap-4">
+        <h2 className="text-4xl font-bold text-[#6d35f3]">
+          Products You’ll Love
+        </h2>
+
+        <div className="flex flex-col md:items-center gap-4 w-full md:w-auto md:min-w-[20rem]">
+          {/* Price Filter */}
+          <div className="w-full md:w-60">
+            <p className="text-gray-700 font-medium mb-1">
+              Price Range: ₹{priceRange[0]} - ₹{priceRange[1]}
+            </p>
+            <Slider
+              value={priceRange}
+              min={0}
+              max={1000}
+              onChange={(_, newValue) => setPriceRange(newValue)}
+              valueLabelDisplay="auto"
+              color="secondary"
+            />
+          </div>
+
+          {/* Filter Type */}
+          <div className="relative w-full md:w-48">
+            <select
+              className="block text-[0.85rem] w-full px-4 py-2 pr-8 text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              value={filterType}
+              onChange={(e) => {
+                setFilterType(e.target.value);
+                setFilterValue("");
+              }}
+            >
+              <option value="">---Select Filter Type---</option>
+              <option value="category">Filter by Category</option>
+              <option value="brand">Filter by Brand</option>
+            </select>
+          </div>
+
+          {/* Dynamic Filter */}
+          {filterType === "category" && (
+            <div className="relative w-full md:w-48">
+              <select
+                className="block text-[0.85rem] w-full px-4 py-2 pr-8 text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                value={filterValue}
+                onChange={(e) => setFilterValue(e.target.value)}
+              >
+                <option value="">---Select Category---</option>
+                {uniqueCategory.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {filterType === "brand" && (
+            <div className="relative w-full md:w-48">
+              <select
+                className="block text-[0.85rem] w-full px-4 py-2 pr-8 text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                value={filterValue}
+                onChange={(e) => setFilterValue(e.target.value)}
+              >
+                <option value="">---Select Brand---</option>
+                {uniqueBrand.map((b) => (
+                  <option key={b} value={b}>
+                    {b}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+        </div>
       </div>
 
-      <select
-        onChange={(e) => {
-          setFilterType(e.target.value);
-          setFilterValue("");
-        }}
-        value={filterType}
-      >
-        <option value="">---Select Filter Type---</option>
-        <option value="category">Filter by Category</option>
-        <option value="brand">Filter by Brand</option>
-      </select>
-      {filterType === "category" ? (
-        <select
-          onChange={(e) => setFilterValue(e.target.value)}
-          value={filterValue}
-        >
-          <option value="">---Select Category---</option>
-          {uniquecategory.map((product) => (
-            <option key={product} value={product}>
-              {product}
-            </option>
-          ))}
-        </select>
-      ) : filterType === "brand" ? (
-        <select
-          onChange={(e) => setFilterValue(e.target.value)}
-          value={filterValue}
-        >
-          <option value="">---Select Brand---</option>
-          {uniqueBrand.map((product) => (
-            <option key={product} value={product}>
-              {product}
-            </option>
-          ))}
-        </select>
-      ) : null}
-
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(4, 1fr)",
-          gap: "10px",
-        }}
-      >
+      {/* Products Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {displayedProducts.map((product) => {
           const quantity = product.quantity || 0;
           return (
             <div
               key={product._id}
-              style={{
-                border: "1px solid #c2c2c2",
-                margin: "10px",
-                padding: "10px",
-                borderRadius: "5px",
-              }}
+              className="rounded-xl px-5 py-6 customcardshadow text-start flex flex-col"
             >
-              <Link to={`/product/${product.slug}`}>
-                <img src={product.thumbnail} alt={product.name} width="100" />
+              <Link
+                to={`/product/${product.slug}`}
+                className="flex justify-center mb-4"
+              >
+                <img
+                  src={product.thumbnail}
+                  alt={product.name}
+                  className="w-full max-h-[200px] object-contain"
+                />
               </Link>
               <Link
                 to={`/product/${product.slug}`}
-                style={{ textDecoration: "none", color: "#000" }}
+                className="text-black no-underline mb-2"
               >
-                <h3>{product.title}</h3>
+                <h3 className="font-bold text-xl min-h-[70px]">
+                  {product.title}
+                </h3>
               </Link>
-              <p>Price: ₹{Math.round(product.price)}</p>
-              <p>Category: {product.category}</p>
-              <p>Rating: {product.rating}</p>
-              <p>Stock: {product.stock}</p>
-              <p>Brand: {product.brand}</p>
 
+              <p className="flex justify-between items-center mb-1">
+                <span className="font-bold">Price:</span> ₹
+                {Math.round(product.price)}
+              </p>
+              <p className="flex justify-between items-center mb-1">
+                <span className="font-bold">Category:</span> {product.category}
+              </p>
+              <p className="flex justify-between items-center mb-1">
+                <span className="font-bold">Rating:</span> {product.rating}
+              </p>
+              <p className="flex justify-between items-center mb-1">
+                <span className="font-bold">Stock:</span> {product.stock}
+              </p>
+              <p className="flex justify-between items-center mb-3">
+                <span className="font-bold">Brand:</span> {product.brand}
+              </p>
+
+              {/* Add / Increase / Decrease */}
               {quantity === 0 ? (
-                <button onClick={() => handleAddToCart(product._id)}>
+                <button
+                  onClick={() => handleAddToCart(product._id)}
+                  className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition"
+                >
                   Add to Cart
                 </button>
               ) : (
-                <div style={{ display: "flex", gap: "1rem" }}>
-                  <button onClick={() => handleIncrease(product._id, quantity)}>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => handleIncrease(product._id, quantity)}
+                    className="px-3 py-1 bg-[#e6a71f] rounded hover:bg-[#e6a71d] transition"
+                  >
                     +
                   </button>
-                  <span style={{ margin: "0 8px" }}>{quantity}</span>
+                  <span className="font-medium">{quantity}</span>
                   <button
                     onClick={() => handleDecrease(product._id, quantity)}
-                    disabled={quantity === 0}
+                    className="px-3 py-1 bg-[#e6a71f] rounded hover:bg-[#e6a71d] transition"
                   >
                     -
                   </button>
+
+                  <span className="ml-auto font-bold">
+                    ₹{Math.round(quantity * product.price)}
+                  </span>
                 </div>
-              )}
-              {quantity > 0 && (
-                <span>₹{Math.round(quantity * product.price)}</span>
               )}
             </div>
           );

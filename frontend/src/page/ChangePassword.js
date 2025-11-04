@@ -30,7 +30,7 @@ const ChangePassword = () => {
   };
 
   return (
-    <div className="reset-container">
+    <div className="flex justify-center">
       <div className="reset-card">
         <h2>🔒 Reset Password</h2>
         <p className="reset-subtext">Enter and confirm your new password below</p>

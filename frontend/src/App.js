@@ -43,8 +43,9 @@ function App() {
       <Navbar />
       <div
         style={{
-          marginTop: location.pathname === "/change-password" ? "5rem" : "7rem",
+          marginTop: location.pathname === "/change-password" ? "3rem" : "2rem",
         }}
+        className="containerCustom mx-auto px-4"
       >
         <Outlet />
       </div>

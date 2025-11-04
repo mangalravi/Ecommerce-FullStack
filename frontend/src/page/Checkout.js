@@ -370,7 +370,7 @@ const Checkout = () => {
           })}
 
           <hr />
-          <p>
+          <p className="py-3">
             Grand Total : ₹
             {CartFinalData.reduce(
               (total, product) =>

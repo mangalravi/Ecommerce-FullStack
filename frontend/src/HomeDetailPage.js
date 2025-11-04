@@ -1,7 +1,11 @@
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react"; // <-- correct import
-import { addOrUpdateCartItemAPI, getAllCartItems, fetchCartItemsData, removeCartItemAPI } from "./store/slices/CartSlice";
+import { useEffect } from "react";
+import {
+  addOrUpdateCartItemAPI,
+  getAllCartItems,
+  fetchCartItemsData,
+} from "./store/slices/CartSlice";
 import { getAllProducts } from "./store/slices/ProductSlice";
 
 const HomeDetailPage = () => {
@@ -11,13 +15,13 @@ const HomeDetailPage = () => {
   const Products = useSelector(getAllProducts);
   const CartItems = useSelector(getAllCartItems);
 
-  // Fetch cart items on mount
   useEffect(() => {
     dispatch(fetchCartItemsData());
   }, [dispatch]);
 
   const cartItem = CartItems.find((ele) => String(ele.Pid) === String(id));
-  const ProductItem = Products.find((ele) => String(ele._id) === String(id)) || {};
+  const ProductItem =
+    Products.find((ele) => String(ele._id) === String(id)) || {};
 
   if (!ProductItem) return <div>Product not found!</div>;
 
@@ -28,13 +32,20 @@ const HomeDetailPage = () => {
 
   const handleDecrease = () => {
     if (cartItem && cartItem.quantity > 1) {
-      dispatch(addOrUpdateCartItemAPI({ productId: ProductItem._id, quantity: cartItem.quantity - 1 }));
+      dispatch(
+        addOrUpdateCartItemAPI({
+          productId: ProductItem._id,
+          quantity: cartItem.quantity - 1,
+        })
+      );
     }
   };
 
   return (
     <div key={id} style={{ position: "relative", display: "flex" }}>
-      <div style={{ display: "flex", justifyContent: "start", minWidth: "400px" }}>
+      <div
+        style={{ display: "flex", justifyContent: "start", minWidth: "400px" }}
+      >
         <img
           src={ProductItem.images[2]}
           alt="product"
@@ -50,7 +61,13 @@ const HomeDetailPage = () => {
         </div>
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "self-start" }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "self-start",
+        }}
+      >
         <h2 style={{ marginBottom: 0 }}>
           {ProductItem.title}
           <span
@@ -76,7 +93,12 @@ const HomeDetailPage = () => {
         <div style={{ display: "flex" }}>
           <button onClick={handleIncrease}>+</button>
           {cartItem?.quantity || 0}
-          <button onClick={handleDecrease} disabled={!cartItem || cartItem.quantity === 1}>-</button>
+          <button
+            onClick={handleDecrease}
+            disabled={!cartItem || cartItem.quantity === 1}
+          >
+            -
+          </button>
         </div>
       </div>
     </div>

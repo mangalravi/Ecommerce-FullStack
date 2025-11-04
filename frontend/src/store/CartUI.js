@@ -15,19 +15,16 @@ import api from "../api/api";
 const CartUI = () => {
   const [error, setError] = useState("");
   const dispatch = useDispatch();
-
   const cartData = useSelector(getAllCartItems);
   const productData = useSelector(getAllProducts);
   const isError = useSelector(isCartError);
   const isLoading = useSelector(isCartLoading);
-  const nevigate = useNavigate();
+  const navigate = useNavigate();
 
-  // Fetch cart items on component mount
   useEffect(() => {
     dispatch(fetchCartItemsData());
   }, [dispatch]);
 
-  // Map cart data with product details
   const CartFinalData = cartData
     .map((cartItem) => {
       const product =
@@ -36,24 +33,14 @@ const CartUI = () => {
             String(product._id) === String(cartItem.Pid) ||
             product._id === cartItem.Pid
         ) || {};
-
       return { ...product, quanity: cartItem.quantity };
     })
     .filter((item) => item._id);
-  // console.log("CartFinalData", CartFinalData);
 
   const totalCost = CartFinalData.reduce(
     (total, item) => Math.round(total + item.price * item.quanity),
     0
   );
-
-  const cartbtntop = {
-    display: "flex",
-    justifyContent: "space-between",
-    marginBottom: "1rem",
-    gap: "1rem",
-    alignItems: "center",
-  };
 
   const handleIncrease = (productId, currentQty) => {
     dispatch(addOrUpdateCartItemAPI({ productId, quantity: currentQty + 1 }));
@@ -69,120 +56,144 @@ const CartUI = () => {
     dispatch(removeCartItemAPI(productId));
   };
 
-  if (isLoading) return <h2 style={{ textAlign: "center" }}>Loading...</h2>;
-  if (isError)
-    return <h3 style={{ color: "red", textAlign: "center" }}>{isError}</h3>;
   const MakeANewOrder = async () => {
     try {
-      console.log("CartFinalData", CartFinalData);
-
       const response = await api.post("/order/create-product", CartFinalData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
       });
-      console.log("response", response.data);
-      nevigate("/checkout");
+      navigate("/checkout");
     } catch (error) {
       setError(error.response?.data?.message || "Product Not Created");
     }
   };
+
+  if (isLoading)
+    return (
+      <h2 className="text-center mt-10 text-2xl font-semibold">Loading...</h2>
+    );
+  if (isError)
+    return (
+      <h3 className="text-center mt-10 text-red-500 text-xl">{isError}</h3>
+    );
+
   return (
-    <>
+    <div className="px-4 md:px-8 lg:px-16 py-8 max-w-7xl mx-auto">
       {CartFinalData.length === 0 ? (
-        <>
-          <h3>No Items in cart Please add...</h3>
-          <Link to="/product" className="continue-btn">
+        <div className="text-center mt-20">
+          <h3 className="text-2xl mb-4 font-semibold">
+            No Items in Cart. Please add some products.
+          </h3>
+          <Link
+            to="/product"
+            className="inline-block bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-md transition"
+          >
             Continue Shopping
           </Link>
-        </>
+        </div>
       ) : (
         <>
-          <h2>Cart Products - Total Cost = ₹{totalCost}</h2>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(4, 1fr)",
-              gap: "10px",
-            }}
-          >
+          <h2 className="text-2xl font-bold mb-6">
+            Cart Products - Total Cost:{" "}
+            <span className="text-green-600">₹{totalCost}</span>
+          </h2>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {CartFinalData.map((product) => (
               <div
                 key={product._id}
-                style={{
-                  border: "1px solid #c2c2c2",
-                  margin: "10px",
-                  padding: "10px",
-                  borderRadius: "5px",
-                }}
+                className="border rounded-lg shadow-sm hover:shadow-md transition overflow-hidden bg-white flex flex-col"
               >
                 <Link to={`/product/${product.slug}`}>
-                  <img src={product.thumbnail} alt={product.name} width="100" />
+                  <img
+                    src={product.thumbnail}
+                    alt={product.name}
+                    className="w-full h-48 object-cover"
+                  />
                 </Link>
-                <Link
-                  to={`/product/${product.slug}`}
-                  style={{ textDecoration: "none", color: "#000" }}
-                >
-                  <h3>{product.title}</h3>
-                </Link>
-                <p>Price: ₹{product.price}</p>
-                <p>Category: {product.category}</p>
-                <p>Rating: {product.rating}</p>
-                <p>Stock: {product.stock}</p>
-                <p>Brand: {product.brand}</p>
 
-                <div>
-                  <div style={cartbtntop}>
-                    <button
-                      onClick={() =>
-                        handleIncrease(product._id, product.quanity)
-                      }
-                    >
-                      +
-                    </button>
-                    {product.quanity}
-                    <button
-                      onClick={() =>
-                        handleDecrease(product._id, product.quanity)
-                      }
-                      disabled={product.quanity === 1}
-                    >
-                      -
-                    </button>
+                <div className="p-4 flex flex-col flex-1">
+                  <Link
+                    to={`/product/${product.slug}`}
+                    className="text-lg font-semibold text-gray-800 hover:text-green-600 mb-2"
+                  >
+                    <h3 className="font-bold text-xl min-h-[70px]">
+                      {product.title}
+                    </h3>
+                  </Link>
+                  <p className="flex justify-between items-center mb-1">
+                    <span className="font-bold">Price:</span> ₹
+                    {Math.round(product.price)}
+                  </p>
+                  <p className="flex justify-between items-center mb-1">
+                    <span className="font-bold">Category:</span>{" "}
+                    {product.category}
+                  </p>
+                  <p className="flex justify-between items-center mb-1">
+                    <span className="font-bold">Rating:</span> {product.rating}
+                  </p>
+                  <p className="flex justify-between items-center mb-1">
+                    <span className="font-bold">Stock:</span> {product.stock}
+                  </p>
+                  <p className="flex justify-between items-center mb-3">
+                    <span className="font-bold">Brand:</span> {product.brand}
+                  </p>
+
+                  {/* Quantity Controls */}
+                  <div className="flex justify-between items-center mb-3">
+                    <div className="flex items-center w-full">
+                      <button
+                        onClick={() =>
+                          handleIncrease(product._id, product.quanity)
+                        }
+                        className="px-3 py-1 bg-[#e6a71f] rounded hover:bg-[#e6a71d] transition"
+                      >
+                        +
+                      </button>
+                      <span className="font-semibold">{product.quanity}</span>
+                      <button
+                        onClick={() =>
+                          handleDecrease(product._id, product.quanity)
+                        }
+                        disabled={product.quanity === 1}
+                        className={`px-3 py-1 border rounded-md mr-2 bg-[#e6a71f] ${
+                          product.quanity === 1
+                            ? "cursor-not-allowed opacity-50"
+                            : "hover:bg-[#e6a71d]"
+                        }`}
+                      >
+                        -
+                      </button>
+                    </div>
                   </div>
-
-                  <div style={cartbtntop}>
-                    <button
-                      style={{
-                        maxWidth: "150px",
-                        width: "113px",
-                        background: "#ff4040",
-                      }}
-                      onClick={() => handleRemove(product._id)}
-                    >
-                      🗑️
-                    </button>
-                    <span>
-                      Total : ₹{Math.round(product.quanity * product.price)}
-                    </span>
+                  <button
+                    onClick={() => handleRemove(product._id)}
+                    className="bg-red-500 hover:bg-red-600 font-medium mb-3 text-white px-3 py-1 rounded-md text-sm"
+                  >
+                    🗑️ Remove
+                  </button>
+                  <div className="mt-auto font-semibold text-gray-800">
+                    Total: ₹{Math.round(product.quanity * product.price)}
                   </div>
                 </div>
               </div>
             ))}
           </div>
 
-          <button style={{ maxWidth: "150px" }}>
-            <Link
-              // to="/checkout"
+          {/* Checkout Button */}
+          <div className="text-center mt-8">
+            <button
               onClick={MakeANewOrder}
-              style={{ color: "#fff", textDecoration: "none" }}
+              className="bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-md text-lg font-semibold transition"
             >
               Check Out
-            </Link>
-          </button>
+            </button>
+            {error && <p className="text-red-500 mt-2">{error}</p>}
+          </div>
         </>
       )}
-    </>
+    </div>
   );
 };
 
