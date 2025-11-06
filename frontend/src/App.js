@@ -39,13 +39,20 @@ function App() {
   }, [dispatch, navigate]);
 
   return (
-    <div className="App">
+    <div className="App overflow-x-hidden">
       <Navbar />
       <div
         style={{
-          marginTop: location.pathname === "/change-password" ? "3rem" : "2rem",
+          marginTop:
+            location.pathname === "/change-password"
+              ? "3rem"
+              : location.pathname === "/product"
+              ? "0"
+              : "2rem",
         }}
-        className="containerCustom mx-auto px-4"
+        className={`containerCustom mx-auto ${
+          location.pathname === "/product" ? "px-0" : "px-4"
+        }`}
       >
         <Outlet />
       </div>

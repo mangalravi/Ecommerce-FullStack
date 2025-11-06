@@ -52,7 +52,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-[#f6f6f6] shadow-md px-6 py-3 flex justify-between items-center sticky top-0 z-50">
+    <nav className="bg-[#fff] shadow-md px-6 py-3 flex justify-between items-center sticky top-0 z-50">
       {/* Logo */}
       <Link
         to="/product"

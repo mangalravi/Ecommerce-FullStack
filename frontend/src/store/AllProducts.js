@@ -14,6 +14,8 @@ import {
 import { Link } from "react-router-dom";
 import { Slider } from "@mui/material";
 import "./product.css";
+import CustomSlider from "../components/Slider";
+import Button from "../components/Button";
 
 const AllProducts = () => {
   const [filterType, setFilterType] = useState("");
@@ -81,8 +83,24 @@ const AllProducts = () => {
 
   return (
     <>
-      {/* Heading + Filters */}
-      <div className="flex flex-col md:flex-row md:justify-between mb-6 gap-4">
+      <div className="relative">
+        <CustomSlider />
+        <div className="absolute top-1/2 transform -translate-y-1/2 left-[100px]">
+          <h2 className="text-[#111111] text-[2.5rem] mb-[2rem] max-w-[205px] leading-[1.1]">
+            Furniture 2022
+          </h2>
+          <p className="text-[#111111] text-[1.125rem] mb-[3rem] font-[700]">
+            NEW ARRIVALS
+          </p>
+          <h3 className="text-[#111111] text-[70px] mb-[3rem] font-[300] max-w-[474px] leading-[1.2]">
+            Spring Collection
+          </h3>
+          <Button variant="danger" className="w-full mt-4 max-w-[145px]">
+            Shop Now
+          </Button>
+        </div>
+      </div>
+      <div className="flex flex-col md:flex-row md:justify-between my-6 gap-4 mx-[100px]">
         <h2 className="text-4xl font-bold text-[#6d35f3]">
           Products You’ll Love
         </h2>
@@ -157,7 +175,7 @@ const AllProducts = () => {
       </div>
 
       {/* Products Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mx-[100px] ">
         {displayedProducts.map((product) => {
           const quantity = product.quantity || 0;
           return (
@@ -197,7 +215,7 @@ const AllProducts = () => {
               <p className="flex justify-between items-center mb-1">
                 <span className="font-bold">Stock:</span> {product.stock}
               </p>
-              <p className="flex justify-between items-center mb-3">
+              <p className="flex justify-between items-center mb-[2.25rem]">
                 <span className="font-bold">Brand:</span> {product.brand}
               </p>
 
