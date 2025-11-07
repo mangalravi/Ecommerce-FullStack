@@ -17,7 +17,10 @@ dotenv.config({
 
 app.use(
   cors({
-    origin: process.env.CORS_ORIGINS || "http://localhost:3000",
+    origin:
+      process.env.CORS_ORIGINS ||
+      "http://localhost:3000" ||
+      "https://ecommerce-full-stack-green.vercel.app",
     credentials: true,
   })
 )
@@ -42,7 +45,6 @@ import userRoute from "./routes/user.routes.js"
 import productRoute from "./routes/product.routes.js"
 import paymentRoute from "./routes/payment.routes.js"
 import orderRoute from "./routes/order.routes.js"
-
 
 //routes declaration
 app.use("/api/v1/users", userRoute)

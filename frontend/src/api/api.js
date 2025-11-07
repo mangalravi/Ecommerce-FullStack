@@ -2,8 +2,8 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:7000/api/v1",
-  withCredentials: true, 
+  baseURL: "https://ecommerce-fullstack-production-6b4f.up.railway.app",
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
