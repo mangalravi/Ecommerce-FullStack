@@ -13,6 +13,10 @@ const Navbar = () => {
   const { fullName, username, email } = useSelector(
     (state) => state.user.user || {}
   );
+  const userNameCapital = fullName
+    ?.split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 
   const TotalCartItems = cartItems.reduce(
     (total, item) => total + item.quantity,
@@ -52,7 +56,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-[#fff] shadow-md px-6 py-3 flex justify-between items-center sticky top-0 z-50">
+    <nav className="bg-[#fff] shadow-md px-[100px] py-3 flex justify-between items-center top-0 z-50 fixed w-full">
       {/* Logo */}
       <Link
         to="/product"
@@ -61,16 +65,14 @@ const Navbar = () => {
         <img src={logo} alt="Logo" className=" w-[150px] inline-block mr-2" />
       </Link>
 
-      {/* Right Section */}
       <div className="flex items-center gap-6 relative" ref={dropdownRef}>
-        {/* Cart */}
         <Link
           to="/cart"
           className="relative text-gray-700 hover:text-indigo-600 font-medium"
         >
           Cart
           {TotalCartItems > 0 && (
-            <span className="absolute -top-2 -right-3 bg-[#73f7db] text-[#394252] text-xs font-bold rounded-full px-2">
+            <span className="absolute -top-2 -right-3 bg-[#6d35f3] text-[#fff] text-xs font-bold rounded-full px-2">
               {TotalCartItems}
             </span>
           )}
@@ -82,7 +84,7 @@ const Navbar = () => {
           className="flex items-center bg-transparent hover:bg-transparent gap-2 text-gray-700 text-indigo-600 font-medium focus:outline-none"
         >
           <AccountCircleIcon fontSize="medium" />
-          <span>{fullName || "User"}</span>
+          <span>{userNameCapital || "User"}</span>
         </button>
 
         {/* Dropdown */}
@@ -102,12 +104,12 @@ const Navbar = () => {
               >
                 Logout
               </button>
-              <Link
+              {/* <Link
                 to="/change-password"
                 className="px-4 py-2 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors"
               >
                 Change Password
-              </Link>
+              </Link> */}
               <Link
                 to="/update-account-details"
                 className="px-4 py-2 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors"

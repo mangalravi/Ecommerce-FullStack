@@ -11,6 +11,7 @@ import { getAllProducts } from "./slices/ProductSlice";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import api from "../api/api";
+import Button from "../components/Button";
 
 const CartUI = () => {
   const [error, setError] = useState("");
@@ -79,7 +80,7 @@ const CartUI = () => {
     );
 
   return (
-    <div className="px-4 md:px-8 lg:px-16 py-8 max-w-7xl mx-auto">
+    <div className="px-4 md:px-8 lg:px-16 py-8 max-w-7xl mx-auto mt-[80px]">
       {CartFinalData.length === 0 ? (
         <div className="text-center mt-20">
           <h3 className="text-2xl mb-4 font-semibold">
@@ -99,82 +100,96 @@ const CartUI = () => {
             <span className="text-green-600">₹{totalCost}</span>
           </h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="flex flex-col gap-6 ">
             {CartFinalData.map((product) => (
               <div
                 key={product._id}
-                className="border rounded-lg shadow-sm hover:shadow-md transition overflow-hidden bg-white flex flex-col"
+                className="border rounded-lg shadow-sm py-[1.5rem] px-[1.25rem] gap-[1.5rem] flex "
               >
-                <Link to={`/product/${product.slug}`}>
-                  <img
-                    src={product.thumbnail}
-                    alt={product.name}
-                    className="w-full h-48 object-cover"
-                  />
-                </Link>
-
-                <div className="p-4 flex flex-col flex-1">
-                  <Link
-                    to={`/product/${product.slug}`}
-                    className="text-lg font-semibold text-gray-800 hover:text-green-600 mb-2"
-                  >
-                    <h3 className="font-bold text-xl min-h-[70px]">
-                      {product.title}
-                    </h3>
+                <div>
+                  <Link to={`/product/${product.slug}`}>
+                    <img
+                      src={product.thumbnail}
+                      alt={product.name}
+                      className="w-[112px] h-[112px] object-contain mb-4"
+                    />
                   </Link>
-                  <p className="flex justify-between items-center mb-1">
-                    <span className="font-bold">Price:</span> ₹
-                    {Math.round(product.price)}
-                  </p>
-                  <p className="flex justify-between items-center mb-1">
-                    <span className="font-bold">Category:</span>{" "}
-                    {product.category}
-                  </p>
-                  <p className="flex justify-between items-center mb-1">
-                    <span className="font-bold">Rating:</span> {product.rating}
-                  </p>
-                  <p className="flex justify-between items-center mb-1">
-                    <span className="font-bold">Stock:</span> {product.stock}
-                  </p>
-                  <p className="flex justify-between items-center mb-3">
-                    <span className="font-bold">Brand:</span> {product.brand}
-                  </p>
-
-                  {/* Quantity Controls */}
-                  <div className="flex justify-between items-center mb-3">
-                    <div className="flex items-center w-full">
-                      <button
+                  <div className="flex flex-col gap-[1rem]">
+                    <div className="flex items-center">
+                      <Button
                         onClick={() =>
                           handleIncrease(product._id, product.quanity)
                         }
-                        className="px-3 py-1 bg-[#e6a71f] rounded hover:bg-[#e6a71d] transition"
+                        className="px-3 py-2 purpulebtn rounded hover:bg-[#e6a71d] transition"
                       >
                         +
-                      </button>
-                      <span className="font-semibold">{product.quanity}</span>
-                      <button
+                      </Button>
+                      <span className="font-semibold mx-4">
+                        {product.quanity}
+                      </span>
+                      <Button
                         onClick={() =>
                           handleDecrease(product._id, product.quanity)
                         }
                         disabled={product.quanity === 1}
-                        className={`px-3 py-1 border rounded-md mr-2 bg-[#e6a71f] ${
+                        className={`px-3 py-2 border rounded-md mr-2 purpulebtn ${
                           product.quanity === 1
                             ? "cursor-not-allowed opacity-50"
                             : "hover:bg-[#e6a71d]"
                         }`}
                       >
                         -
-                      </button>
+                      </Button>
+                    </div>
+                    <Button onClick={() => handleRemove(product._id)}>
+                      🗑️ Remove
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="px-[20px] py-[1.5rem] flex flex-col flex-1">
+                  <div className="flex flex-col">
+                    <div className="flex justify-between items-center mb-3">
+                      <div className="flex items-center w-full">
+                        <Link
+                          to={`/product/${product.slug}`}
+                          className="text-lg font-semibold text-gray-800 hover:text-green-600 mb-2"
+                        >
+                          <h3 className="font-bold text-xl mb-5 text-[#bb0100]">
+                            {product.title}
+                          </h3>
+                        </Link>
+                      </div>
                     </div>
                   </div>
-                  <button
-                    onClick={() => handleRemove(product._id)}
-                    className="bg-red-500 hover:bg-red-600 font-medium mb-3 text-white px-3 py-1 rounded-md text-sm"
-                  >
-                    🗑️ Remove
-                  </button>
-                  <div className="mt-auto font-semibold text-gray-800">
-                    Total: ₹{Math.round(product.quanity * product.price)}
+
+                  <div className="flex justify-between items-center mb-1">
+                    <p className="flex justify-between items-center mb-1 w-1/2">
+                      <span className="font-bold">Price:</span> ₹
+                      {Math.round(product.price)}
+                    </p>
+                    <p className="flex justify-between items-center mb-1 w-[45%] ms-[50px]">
+                      <span className="font-bold">Category:</span>{" "}
+                      {product.category}
+                    </p>
+                  </div>
+                  <div className="flex justify-between items-center mb-1">
+                    <p className="flex justify-between items-center mb-1 w-1/2">
+                      <span className="font-bold">Rating:</span>{" "}
+                      {product.rating}
+                    </p>
+                    <p className="flex justify-between items-center mb-1 w-[45%] ms-[50px]">
+                      <span className="font-bold">Stock:</span> {product.stock}
+                    </p>
+                  </div>
+                  <div className="flex justify-between items-center mb-1">
+                    <p className="flex justify-between items-center mb-3  w-1/2">
+                      <span className="font-bold">Brand:</span> {product.brand}
+                    </p>
+                    <div className=" font-semibold text-gray-800">
+                      <b>Total : </b> ₹
+                      {Math.round(product.quanity * product.price)}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -182,13 +197,13 @@ const CartUI = () => {
           </div>
 
           {/* Checkout Button */}
-          <div className="text-center mt-8">
-            <button
+          <div className="flex mt-8 justify-end">
+            <Button
               onClick={MakeANewOrder}
-              className="bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-md text-lg font-semibold transition"
+              className="bg-[#16c44b] max-w-[100px] hover:bg-[#16c44b]"
             >
               Check Out
-            </button>
+            </Button>
             {error && <p className="text-red-500 mt-2">{error}</p>}
           </div>
         </>

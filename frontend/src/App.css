@@ -1,3 +1,21 @@
-.slick-prev, .slick-next{
-    background-color: brown;
+.slick-prev,
+.slick-next {
+  background-color: brown;
+}
+.css-l0uhaj-MuiSlider-root {
+  color: #6d35f3 !important;
+}
+.purpulebtn {
+  background: #6d35f3;
+}
+.purpulebtn:hover {
+  background: #6d35f3;
+}
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.error{
+  color:red
 }

@@ -83,7 +83,7 @@ const AllProducts = () => {
 
   return (
     <>
-      <div className="relative">
+      <div className="relative mt-[79px]">
         <CustomSlider />
         <div className="absolute top-1/2 transform -translate-y-1/2 left-[100px]">
           <h2 className="text-[#111111] text-[2.5rem] mb-[2rem] max-w-[205px] leading-[1.1]">
@@ -175,7 +175,7 @@ const AllProducts = () => {
       </div>
 
       {/* Products Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mx-[100px] ">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mx-[100px] ">
         {displayedProducts.map((product) => {
           const quantity = product.quantity || 0;
           return (
@@ -197,51 +197,51 @@ const AllProducts = () => {
                 to={`/product/${product.slug}`}
                 className="text-black no-underline mb-2"
               >
-                <h3 className="font-bold text-xl min-h-[70px]">
+                <h3 className="font-bold text-[1.25rem] mb-5 text-[#bb0100] truncate w-[250px]">
                   {product.title}
                 </h3>
               </Link>
 
-              <p className="flex justify-between items-center mb-1">
+              <p className="flex justify-between items-center mb-1 text-[0.875rem]">
                 <span className="font-bold">Price:</span> ₹
                 {Math.round(product.price)}
               </p>
-              <p className="flex justify-between items-center mb-1">
+              <p className="flex justify-between items-center mb-1 text-[0.875rem]">
                 <span className="font-bold">Category:</span> {product.category}
               </p>
-              <p className="flex justify-between items-center mb-1">
+              <p className="flex justify-between items-center mb-1 text-[0.875rem]">
                 <span className="font-bold">Rating:</span> {product.rating}
               </p>
-              <p className="flex justify-between items-center mb-1">
+              <p className="flex justify-between items-center mb-1 text-[0.875rem]">
                 <span className="font-bold">Stock:</span> {product.stock}
               </p>
-              <p className="flex justify-between items-center mb-[2.25rem]">
+              <p className="flex justify-between items-center mb-[2.25rem] text-[0.875rem]">
                 <span className="font-bold">Brand:</span> {product.brand}
               </p>
 
               {/* Add / Increase / Decrease */}
               {quantity === 0 ? (
-                <button
+                <Button
                   onClick={() => handleAddToCart(product._id)}
-                  className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition"
+                  className="purpulebtn"
                 >
                   Add to Cart
-                </button>
+                </Button>
               ) : (
                 <div className="flex items-center gap-2">
-                  <button
+                  <Button
                     onClick={() => handleIncrease(product._id, quantity)}
-                    className="px-3 py-1 bg-[#e6a71f] rounded hover:bg-[#e6a71d] transition"
+                    className="purpulebtn"
                   >
                     +
-                  </button>
+                  </Button>
                   <span className="font-medium">{quantity}</span>
-                  <button
+                  <Button
                     onClick={() => handleDecrease(product._id, quantity)}
-                    className="px-3 py-1 bg-[#e6a71f] rounded hover:bg-[#e6a71d] transition"
+                    className="purpulebtn"
                   >
                     -
-                  </button>
+                  </Button>
 
                   <span className="ml-auto font-bold">
                     ₹{Math.round(quantity * product.price)}

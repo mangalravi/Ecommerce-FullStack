@@ -5,6 +5,8 @@ import api from "../api/api";
 import "./UpdateAccount.css";
 import { useNavigate } from "react-router-dom";
 import { updateAccountDetail } from "../store/slices/UserSlice";
+import InputField from "../components/InputFeild";
+import Button from "../components/Button";
 
 const UpdateAccount = () => {
   const user = useSelector(getCurrentUserData);
@@ -20,8 +22,8 @@ const UpdateAccount = () => {
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const phnnumberArray = user.phoneNumber.split("").splice(0, 3);
-  const phnnumber = phnnumberArray.join("");
+  const phnnumberArray = user.phoneNumber?.split("").splice(0, 3);
+  const phnnumber = phnnumberArray?.join("");
   let newPhoneNumber = user.phoneNumber;
 
   if (phnnumber === "+91") {
@@ -90,65 +92,55 @@ const UpdateAccount = () => {
   };
 
   return (
-    <div className="update-account-container">
+    <div className="flex items-center justify-center mt-[30px] h-[calc(100vh_-_4.5rem)]">
       <div className="update-account-card">
-        <h2>Update Account Details</h2>
+        <h2 className="text-[1.25rem] font-[600]">Update Account Details</h2>
         <form onSubmit={handleSubmit} className="update-form">
-          <label>
-            Full Name
-            <input
-              type="text"
-              name="fullName"
-              value={formData.fullName}
-              onChange={handleChange}
-              placeholder="Enter your full name"
-              required
-            />
-          </label>
+          <InputField
+            type="text"
+            name="fullName"
+            value={formData.fullName}
+            onChange={handleChange}
+            placeholder="Enter your full name"
+            required
+            label=" Full Name"
+          />
+          <InputField
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Enter your email"
+            required
+            label="Email"
+          />
 
-          <label>
-            Email
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Enter your email"
-              required
-            />
-          </label>
-          <label>
-            User Name
-            <input
-              type="text"
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
-              placeholder="Enter your User Name"
-              required
-            />
-          </label>
-
+          <InputField
+            name="username"
+            value={formData.username}
+            onChange={handleChange}
+            placeholder="Enter your User Name"
+            required
+            label="User Name"
+          />
           {user.phoneNumber !== undefined && (
-            <label>
-              Phone Number
-              <input
-                type="text"
-                name="phoneNumber"
-                value={formData.phoneNumber}
-                onChange={handleChange}
-                placeholder="Enter 10-digit phone number"
-                maxLength={10}
-              />
-            </label>
+            <InputField
+              type="text"
+              name="phoneNumber"
+              value={formData.phoneNumber}
+              onChange={handleChange}
+              placeholder="Enter 10-digit phone number"
+              maxLength={10}
+              label="Phone Number"
+            />
           )}
 
           {error && <p className="error-msg">{error}</p>}
           {success && <p className="success-msg">{success}</p>}
 
-          <button type="submit" className="update-btn">
+          <Button type="submit" className="purpulebtn">
             Update Account
-          </button>
+          </Button>
         </form>
       </div>
     </div>

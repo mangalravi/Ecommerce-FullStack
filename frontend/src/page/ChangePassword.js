@@ -2,15 +2,21 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../api/api";
 import "./ChangePassword.css";
+import InputField from "../components/InputFeild";
+import Button from "../components/Button";
 
 const ChangePassword = () => {
-  const [formData, setFormData] = useState({ newPassword: "", confirmPassword: "" });
+  const [formData, setFormData] = useState({
+    newPassword: "",
+    confirmPassword: "",
+  });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const { token } = useParams();
   const navigate = useNavigate();
+  // console.log("token", token);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,7 +25,9 @@ const ChangePassword = () => {
       return;
     }
     try {
-      await api.post(`/users/reset-password/${token}`, { newPassword: formData.newPassword });
+      await api.post(`/users/reset-password/${token}`, {
+        newPassword: formData.newPassword,
+      });
       setSuccess("✅ Password reset successful. Redirecting to login...");
       setError("");
       setTimeout(() => navigate("/login"), 3000);
@@ -30,18 +38,22 @@ const ChangePassword = () => {
   };
 
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center items-center h-[100vh]">
       <div className="reset-card">
         <h2>🔒 Reset Password</h2>
-        <p className="reset-subtext">Enter and confirm your new password below</p>
+        <p className="reset-subtext">
+          Enter and confirm your new password below
+        </p>
 
         <form onSubmit={handleSubmit} className="reset-form">
-          <div className="form-group password-group">
-            <input
+          <div className="relative">
+            <InputField
               type={showPassword ? "text" : "password"}
               placeholder="New Password"
               value={formData.newPassword}
-              onChange={(e) => setFormData({ ...formData, newPassword: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, newPassword: e.target.value })
+              }
               required
             />
             <span
@@ -52,12 +64,14 @@ const ChangePassword = () => {
             </span>
           </div>
 
-          <div className="form-group password-group">
-            <input
+          <div className="relative">
+            <InputField
               type={showConfirm ? "text" : "password"}
               placeholder="Confirm Password"
               value={formData.confirmPassword}
-              onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, confirmPassword: e.target.value })
+              }
               required
             />
             <span
@@ -68,9 +82,9 @@ const ChangePassword = () => {
             </span>
           </div>
 
-          <button type="submit" className="reset-btn">
+          <Button type="submit" className="purpulebtn">
             Reset Password
-          </button>
+          </Button>
         </form>
 
         {success && <p className="success-msg">{success}</p>}

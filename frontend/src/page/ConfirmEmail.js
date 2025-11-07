@@ -1,6 +1,8 @@
 import { useState } from "react";
 import api from "../api/api";
 import "./auth.css";
+import Button from "../components/Button";
+import InputField from "../components/InputFeild";
 
 const ConfirmEmail = () => {
   const [email, setEmail] = useState("");
@@ -30,20 +32,18 @@ const ConfirmEmail = () => {
       <div className="auth-card">
         <h2>Reset Password</h2>
         <form onSubmit={handleSubmit}>
-          <div className="inputGroup">
-            <label>Email</label>
-            <input
-              type="email"
-              placeholder="Enter your registered email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
+          <InputField
+            type="email"
+            placeholder="Enter your registered email"
+            value={email}
+            label="Email"
+            onChange={(e) => setEmail(e.target.value)}
+          />
 
           {error && <p className="error">{error}</p>}
-          {success && <p className="success">{success}</p>}
+          {success && <p className="success mb-2 mt-0 text-center fw-semibold text-[28a745]">{success}</p>}
 
-          <button type="submit">Send Confirmation Link</button>
+          <Button type="submit">Send Confirmation Link</Button>
         </form>
       </div>
     </div>

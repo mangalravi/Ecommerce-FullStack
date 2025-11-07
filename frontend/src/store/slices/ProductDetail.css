@@ -1,12 +1,9 @@
 .product-detail-container {
   display: flex;
-  flex-wrap: wrap;
   gap: 2rem;
   padding: 2rem;
-  background-color: #f9f9f9;
   border-radius: 12px;
-  max-width: 900px;
-  margin: 2rem auto;
+  background-color: #f9f9f9;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
@@ -23,15 +20,11 @@
   flex-direction: column;
   text-align: start;
 }
-.product-info p {
-  margin-top: 0;
-  margin-bottom: 1.25rem;
-}
+
 
 .product-title {
   font-size: 2rem;
   font-weight: 700;
-  color: #222;
 }
 
 .product-price {

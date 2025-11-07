@@ -1,4 +1,3 @@
-import React from "react";
 
 const InputField = ({
   label,
@@ -14,7 +13,7 @@ const InputField = ({
   return (
     <div className={`flex flex-col mb-4 ${className}`}>
       {label && (
-        <label className="text-[#666666] font-bold mb-2 text-sm">{label}</label>
+        <label className="text-[#666666] font-bold mb-1 text-sm">{label}</label>
       )}
       <input
         type={type}

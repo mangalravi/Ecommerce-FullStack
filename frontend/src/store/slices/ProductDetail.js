@@ -4,6 +4,7 @@ import api from "../../api/api";
 import "./ProductDetail.css";
 import { addOrUpdateCartItemAPI, removeCartItemAPI } from "./CartSlice";
 import { useDispatch, useSelector } from "react-redux";
+import Button from "../../components/Button";
 
 const ProductDetail = () => {
   const { slug } = useParams();
@@ -55,40 +56,64 @@ const ProductDetail = () => {
   if (error) return <h3 className="error">{error}</h3>;
 
   return (
-    <div className="product-detail-container">
-      <div className="product-image">
-        <img src={product.thumbnail} alt={product.title} />
-      </div>
-      <div className="product-info">
-        <h2 className="product-title">{product.title}</h2>
-        <p className="product-price">Price: ₹{product.price}</p>
-        <p className="product-category">Category: {product.category}</p>
-        <p className="product-stock">Stock: {product.stock}</p>
-        <p className="product-rating">Rating: {product.rating}</p>
-        <p className="product-description">{product.description}</p>
+    <div className="product-detail-container mt-[120px] mx-[100px]">
+      <div className="flex flex-col gap-[1rem] ">
+        <div className="product-image">
+          <img src={product.thumbnail} alt={product.title} />
+        </div>
         {console.log(product)}
         {product?.quantity === 0 || product?.quantity === undefined ? (
-          <button onClick={() => handleAddToCart(product._id)}>
+          <Button
+            onClick={() => handleAddToCart(product._id)}
+            className="purpulebtn"
+          >
             Add to Cart
-          </button>
+          </Button>
         ) : (
-          <div style={{ display: "flex", gap: "1rem" }}>
-            <button
+          <div className="flex gap-[1rem] items-center">
+            <Button
               onClick={() => handleIncrease(product._id, product.quantity)}
+              className="purpulebtn"
             >
               +
-            </button>
-            <span style={{ margin: "0 8px" }}>{product.quantity}</span>
-            <button
+            </Button>
+            <span className="my-0 mx-3">{product.quantity}</span>
+            <Button
               onClick={() => handleDecrease(product._id, product.quantity)}
+              className="purpulebtn"
               disabled={product.quantity === 0}
             >
               -
-            </button>
+            </Button>
           </div>
         )}
+      </div>
+
+      <div className="product-info">
+        <h2 className="product-title mb-4 text-[#bb0100]">{product.title}</h2>
+        <p className="product-description mb-3">{product.description}</p>
+        <div className="flex items-center justify-between mb-3">
+          <p className="product-price mb-3">
+            <span className="font-bold">Price: </span> ₹
+            {Math.round(product.price)}
+          </p>
+          <p className="product-category">
+            <span className="font-bold">Category: </span> {product.category}
+          </p>
+        </div>
+        <div className="flex items-center justify-between mb-3">
+          <p className="product-stock">
+            <span className="font-bold">Stock: </span> {product.stock}
+          </p>
+          <p className="product-rating">
+            <span className="font-bold">Rating: </span> {product.rating}
+          </p>
+        </div>
+
         {product.quantity > 0 && (
-          <span>₹{Math.round(product.quantity * product.price)}</span>
+          <span className="text-end">
+            <b>Total Price : </b>₹{Math.round(product.quantity * product.price)}
+          </span>
         )}
       </div>
     </div>

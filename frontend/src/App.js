@@ -50,7 +50,7 @@ function App() {
               ? "0"
               : "2rem",
         }}
-        className={`containerCustom mx-auto ${
+        className={`containerCustom mx-auto mb-[2.5rem] ${
           location.pathname === "/product" ? "px-0" : "px-4"
         }`}
       >

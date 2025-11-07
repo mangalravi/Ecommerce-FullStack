@@ -14,6 +14,7 @@
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.12.2",
+    "formik": "^2.4.6",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-dual-range-slider": "^1.0.4",
@@ -23,7 +24,8 @@
     "react-select": "^5.10.2",
     "react-slick": "^0.31.0",
     "slick-carousel": "^1.8.1",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "yup": "^1.7.1"
   },
   "scripts": {
     "start": "craco start",

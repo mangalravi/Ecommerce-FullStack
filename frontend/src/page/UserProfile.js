@@ -3,6 +3,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { logoutUser } from "../store/slices/UserSlice";
 import "./UserProfile.css";
 import api from "../api/api";
+import Button from "../components/Button";
 
 const UserProfile = () => {
   const user = useSelector((state) => state.user.user);
@@ -51,15 +52,10 @@ const UserProfile = () => {
         </div>
 
         <div className="profile-actions">
-          <button
-            onClick={() => navigate("/product")}
-            className="btn primary-btn"
-          >
+          <Button onClick={() => navigate("/product")} className="purpulebtn">
             Go To Product Page
-          </button>
-          <button onClick={handleLogout} className="btn danger-btn">
-            Logout
-          </button>
+          </Button>
+          <Button onClick={handleLogout}>Logout</Button>
         </div>
       </div>
     </div>

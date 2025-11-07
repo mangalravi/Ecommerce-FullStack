@@ -311,7 +311,7 @@ export const clearCartItems = asyncHandler(async (req, res) => {
   const user = await User.findById(userId)
   if (!user) return res.status(404).json({ message: "User not found" })
 
-  user.cartItems = [] 
+  user.cartItems = []
   await user.save()
 
   res.status(200).json({
@@ -336,27 +336,32 @@ export const clearCartItems = asyncHandler(async (req, res) => {
 // })
 
 const updateAccountDetail = asyncHandler(async (req, res) => {
-  console.log("rea.body", req.body)
-  // console.log("rea.body full req", req)
+  console.log("req.body", req.body)
 
   const { fullName, email, username, phoneNumber } = req.body
-  if (!fullName || !email || !username || !phoneNumber) {
-    throw new ApiError(400, "All Feilds are Required")
+
+  // fullName, email, username are always required
+  if (!fullName || !email || !username) {
+    throw new ApiError(400, "Full Name, Email, and Username are required")
   }
+
   const updateData = {
-    fullName: fullName,
-    email: email,
-    username: username,
-    phoneNumber: phoneNumber,
+    fullName,
+    email,
+    username,
   }
-  // if (phoneNumber) updateData.phoneNumber = phoneNumber;
+
+  // Add phoneNumber only if it is provided
+  if (phoneNumber !== undefined && phoneNumber !== null && phoneNumber !== "") {
+    updateData.phoneNumber = phoneNumber
+  }
+
   const user = await User.findByIdAndUpdate(
     req.body._id,
-    {
-      $set: updateData,
-    },
+    { $set: updateData },
     { new: true }
   ).select("-password -refreshToken")
+
   if (!user) {
     throw new ApiError(404, "User not found")
   }
@@ -495,9 +500,20 @@ export const sendOtp = asyncHandler(async (req, res) => {
   const user = await User.findById(user_id)
   if (!user) return res.status(404).json({ message: "User not found" })
 
+  const existingUser = await User.findOne({
+    phoneNumber,
+    _id: { $ne: user_id },
+  })
+
+  if (existingUser) {
+    return res.status(400).json({
+      message: "This phone number is already registered with another account",
+    })
+  }
   // Update phone number if different
   if (user.phoneNumber !== phoneNumber) user.phoneNumber = phoneNumber
-
+  console.log("user", user)
+  
   // Generate OTP
   const otp = Math.floor(100000 + Math.random() * 900000).toString()
   const otpExpiry = new Date(Date.now() + 5 * 60 * 1000) // 5 min

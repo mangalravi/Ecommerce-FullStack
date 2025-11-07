@@ -13,6 +13,8 @@ import "./checkout.css";
 import api from "../api/api";
 import { useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
+import InputField from "../components/InputFeild";
+import Button from "../components/Button";
 
 const Checkout = () => {
   const [paymentMethod, setPaymentMethod] = useState("card");
@@ -118,10 +120,8 @@ const Checkout = () => {
         phoneNumber: "+91" + formData.phoneNumber,
         user_id: user._id,
       });
-      // console.log("before sent otp", isOtpSent);
-      // console.log("before sent otp res", res);
-      if (res.status === 200 && res.statusText === "OK") {
-        // console.log("yes");
+
+      if (res.status === 200) {
         setSuccess("OTP sent to your phone");
         setError("");
         setIsOtpSent(true);
@@ -130,10 +130,11 @@ const Checkout = () => {
       } else {
         setError(res.data.message || "Failed to send OTP");
       }
-      // console.log("after sent otp", isOtpSent);
     } catch (err) {
-      setError("Something went wrong while sending OTP");
-      console.error(err);
+      const msg =
+        err.response?.data?.message || "Something went wrong while sending OTP";
+      setError(msg);
+      setSuccess("");
     }
   };
 
@@ -201,7 +202,6 @@ const Checkout = () => {
       setError("Please save your billing details first");
       return;
     }
-   
 
     if (paymentMethod === "cod") {
       navigate("/success-page");
@@ -262,17 +262,15 @@ const Checkout = () => {
   };
 
   return (
-    <div className="checkout-container">
+    <div className="mt-[100px] mx-[100px]">
       <h2 className="checkout-title">Checkout</h2>
       <div className="checkout-grid">
-        {/* Billing Form */}
         <div className="checkout-form">
           <h3>Billing Details</h3>
           <form onSubmit={handleSubmit}>
             <input type="text" value={user.fullName} disabled />
             <input type="email" value={user.email} disabled />
 
-            {/* Phone Number + OTP */}
             <div className="phone-otp-wrapper">
               <input
                 type="text"
@@ -284,9 +282,9 @@ const Checkout = () => {
               />
               {isPhoneVerified && <span>✅</span>}
               {!isPhoneVerified && !isOtpSent && (
-                <button type="button" onClick={sendOtp}>
+                <Button className="purpulebtn max-h-[40px]" onClick={sendOtp}>
                   Send OTP
-                </button>
+                </Button>
               )}
             </div>
 
@@ -305,12 +303,8 @@ const Checkout = () => {
                       onKeyDown={(e) => handleOtpKeyDown(index, e)}
                     />
                   ))}
-                  <button type="button" onClick={sendOtp}>
-                    Resend OTP
-                  </button>
-                  <button type="button" onClick={verifyOtp}>
-                    Verify OTP
-                  </button>
+                  <Button onClick={sendOtp}>Resend OTP</Button>
+                  <Button onClick={verifyOtp}>Verify OTP</Button>
                 </div>
               </div>
             )}
@@ -337,17 +331,16 @@ const Checkout = () => {
               onChange={handleChange}
             />
 
-            {error ||
-              (!paymentMethod === "cod" && <p className="error">{error}</p>)}
+            {error && <p className="error text-red-600 mt-2">{error}</p>}
             {success && <p className="success">{success}</p>}
 
-            <button
+            <Button
               type="submit"
               className="save-details-btn"
               onClick={handleSaveDetail}
             >
               Save Details
-            </button>
+            </Button>
           </form>
         </div>
 
@@ -370,8 +363,8 @@ const Checkout = () => {
           })}
 
           <hr />
-          <p className="py-3">
-            Grand Total : ₹
+          <p className="py-3 text-end">
+            <b> Grand Total : </b> ₹
             {CartFinalData.reduce(
               (total, product) =>
                 Math.floor(total + product.quantity * product.price),
@@ -380,49 +373,55 @@ const Checkout = () => {
           </p>
           <hr />
 
-          <div className="payment-method">
+          <div className="payment-method my-[1.25rem] ">
             <h4>Payment Method</h4>
             <div className="payment-options">
-              <label>
+              <label className="text-[0.875rem] my-[0.5rem]">
                 <input
                   type="radio"
                   name="payment"
                   value="card"
                   checked={paymentMethod === "card"}
                   onChange={() => setPaymentMethod("card")}
+                  className="me-1"
                 />
                 Credit / Debit Card
               </label>
-              <label>
+
+              <label className="text-[0.875rem] my-[0.5rem]">
                 <input
                   type="radio"
                   name="payment"
                   value="paypal"
                   checked={paymentMethod === "paypal"}
                   onChange={() => setPaymentMethod("paypal")}
+                  className="me-1"
                 />
                 PayPal
               </label>
-              <label>
+              <label className="text-[0.875rem] my-[0.5rem]">
                 <input
                   type="radio"
                   name="payment"
                   value="cod"
                   checked={paymentMethod === "cod"}
                   onChange={() => setPaymentMethod("cod")}
+                  className="me-1"
                 />
                 Cash on Delivery
               </label>
             </div>
           </div>
-
-          <button
+          {!paymentMethod === "cod" && (
+            <p className="error text-red-600 mt-2">{error}</p>
+          )}
+          <Button
             type="button"
-            className="place-order-btn"
+            className="purpulebtn"
             onClick={handlePlaceOrder}
           >
             Place Order
-          </button>
+          </Button>
         </div>
       </div>
     </div>
