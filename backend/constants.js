@@ -1,1 +1,0 @@
-export const DB_NAME = 'Auth_for_redux_pro';
