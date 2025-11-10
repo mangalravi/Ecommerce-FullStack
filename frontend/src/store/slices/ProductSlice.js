@@ -15,7 +15,7 @@ export const fetchProductsData = createAsyncThunk(
 );
 // console.log("fetchProductsData =>",fetchProductsData());
 
-const slice = createSlice({
+const slice = createSlice({ 
   name: "Products",
   initialState: {
     loading: false,
